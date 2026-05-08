@@ -1,0 +1,28 @@
+:root {
+  font-family: '배달의민족 주아', system-ui, sans-serif;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+input, button, textarea, select {
+  font-family: inherit;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  background: #FAFAF8;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  background: #fff;
+  position: relative;
+}
