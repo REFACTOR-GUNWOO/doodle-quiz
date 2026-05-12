@@ -148,11 +148,12 @@ export function QuizScreen({ quiz, qIdx, total, hints, hintMask, value, setValue
         hintCount={hints}
         hintDim={hints === 0}
         onHint={onHint}
+        hideHint
       />
 
       <div
         style={{
-          padding: '4px 22px 24px',
+          padding: '20px 22px 24px',
           display: 'flex', flexDirection: 'column', gap: 14, flex: 1,
           animation: shake ? 'shake 0.4s' : 'none',
         }}
@@ -207,7 +208,24 @@ export function QuizScreen({ quiz, qIdx, total, hints, hintMask, value, setValue
           onSubmit={onSubmit}
         />
 
-        <PrimaryButton onClick={onSubmit} disabled={value.length < blanks}>제출</PrimaryButton>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button
+            onClick={onHint}
+            style={{
+              flex: 1, padding: '15px 0',
+              background: hints > 0 ? COLORS.yellow : COLORS.border,
+              color: hints > 0 ? COLORS.ink : COLORS.inkMuted,
+              border: 'none', borderRadius: 12,
+              fontSize: 16, fontWeight: 700,
+              cursor: hints > 0 ? 'pointer' : 'not-allowed',
+              fontFamily: 'inherit',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+            }}
+          >
+            💡 힌트 {hints}
+          </button>
+          <PrimaryButton onClick={onSubmit} disabled={value.length < blanks} style={{ flex: 2 }}>제출</PrimaryButton>
+        </div>
       </div>
     </div>
   );

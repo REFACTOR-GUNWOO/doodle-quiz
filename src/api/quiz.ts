@@ -21,5 +21,8 @@ export async function fetchTodayQuizzes(): Promise<Quiz[]> {
     .order('position');
 
   if (error) throw error;
-  return (data ?? []) as Quiz[];
+  return ((data ?? []) as Quiz[]).map((q) => ({
+    ...q,
+    doodle_png: q.doodle_png ? `${q.doodle_png}?v=${date}` : null,
+  }));
 }

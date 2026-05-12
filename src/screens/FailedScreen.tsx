@@ -21,7 +21,7 @@ export function FailedScreen({ qIdx, total, word, meaning, onNext }: Props) {
         </div>
 
         <CardFrame style={{ padding: '22px 16px', marginTop: 18, textAlign: 'center' }}>
-          <div style={{ fontSize: 38, fontWeight: 700, color: COLORS.primary, letterSpacing: '0.02em', fontFamily: "'배달의민족 주아', system-ui" }}>
+          <div style={{ fontSize: 38, fontWeight: 700, color: COLORS.primary, letterSpacing: '0.02em', fontFamily: "'YoonChoWooSan', system-ui" }}>
             {word}
           </div>
           <div style={{ fontSize: 16, color: COLORS.inkSoft, marginTop: 4 }}>{meaning}</div>

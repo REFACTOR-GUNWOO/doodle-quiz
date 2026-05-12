@@ -89,13 +89,14 @@ export function SecondaryButton({
 }
 
 export function NavBar({
-  title, onBack, hintCount, hintDim, onHint,
+  title, onBack, hintCount, hintDim, onHint, hideHint,
 }: {
   title: string;
   onBack?: () => void;
   hintCount: number;
   hintDim?: boolean;
   onHint: () => void;
+  hideHint?: boolean;
 }) {
   return (
     <div style={{
@@ -134,7 +135,8 @@ export function NavBar({
           <span style={{ fontSize: 17, fontWeight: 700, color: COLORS.ink }}>{title}</span>
         )}
       </div>
-      <HintBadge count={hintCount} dim={hintDim} onClick={onHint} />
+      {!hideHint && <HintBadge count={hintCount} dim={hintDim} onClick={onHint} />}
+      {hideHint && <div style={{ width: 36, flexShrink: 0 }} />}
     </div>
   );
 }

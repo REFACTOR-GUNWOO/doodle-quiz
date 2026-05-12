@@ -106,7 +106,7 @@ async function uploadToStorage(b64, date, position) {
     .upload(path, buffer, {
       upsert: true,
       contentType: 'image/png',
-      cacheControl: '31536000',
+      cacheControl: '86400',
     });
   if (uploadErr) throw uploadErr;
 

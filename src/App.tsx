@@ -115,6 +115,8 @@ function MainApp() {
         onEvent: (event) => {
           if (event.type === 'userEarnedReward') {
             store.addHint();
+            store.addHint();
+            store.addHint();
           }
           if (event.type === 'dismissed') {
             setShowHintModal(false);

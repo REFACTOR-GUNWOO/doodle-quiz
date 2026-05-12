@@ -16,12 +16,12 @@ export function CorrectScreen({ qIdx, total, word, meaning, onNext }: Props) {
       <Confetti />
 
       <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', flex: 1 }}>
-        <div style={{ textAlign: 'center', fontSize: 48, fontWeight: 800, color: COLORS.ink, marginTop: 60, fontFamily: "'배달의민족 주아', system-ui" }}>
+        <div style={{ textAlign: 'center', fontSize: 48, fontWeight: 800, color: COLORS.ink, marginTop: 60, fontFamily: "'YoonChoWooSan', system-ui" }}>
           정답!
         </div>
 
         <CardFrame style={{ padding: '22px 16px', marginTop: 18, textAlign: 'center' }}>
-          <div style={{ fontFamily: "'배달의민족 주아', system-ui", fontSize: 38, fontWeight: 700, color: COLORS.green, letterSpacing: '0.02em' }}>
+          <div style={{ fontFamily: "'YoonChoWooSan', system-ui", fontSize: 38, fontWeight: 700, color: COLORS.green, letterSpacing: '0.02em' }}>
             {word}
           </div>
           <div style={{ fontSize: 16, color: COLORS.inkSoft, marginTop: 4 }}>{meaning}</div>

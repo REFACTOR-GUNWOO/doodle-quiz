@@ -66,7 +66,7 @@ export function HomeScreen({ progress, previewQuiz, hasQuizzes, allDone, onStart
     }}>
       <div style={{ textAlign: 'center', marginTop: 4 }}>
         <div style={{
-          fontFamily: "'배달의민족 주아', system-ui",
+          fontFamily: "'YoonChoWooSan', system-ui",
           fontSize: 52, fontWeight: 700, color: COLORS.ink,
           letterSpacing: '-0.02em', display: 'inline-flex', alignItems: 'center', gap: 8,
           lineHeight: 1.15,

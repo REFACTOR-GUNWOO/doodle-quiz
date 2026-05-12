@@ -1,5 +1,12 @@
+@font-face {
+  font-family: 'YoonChoWooSan';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408@1.0/YoonChildfundkoreaManSeh.woff2') format('woff2');
+  font-weight: normal;
+  font-display: swap;
+}
+
 :root {
-  font-family: '배달의민족 주아', system-ui, sans-serif;
+  font-family: 'YoonChoWooSan', system-ui, sans-serif;
 }
 
 * {

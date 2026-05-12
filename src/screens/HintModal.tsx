@@ -52,11 +52,11 @@ export function HintModal({ remaining, onUse, onClose, onWatchAd, adState }: Pro
             <div style={{ textAlign: 'center', fontSize: 13, color: COLORS.inkMuted, marginBottom: 10 }}>
               {adState === 'failed'
                 ? '광고를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.'
-                : '힌트를 모두 사용했어요. 광고를 보고 힌트를 받아요!'}
+                : '힌트를 모두 사용했어요. 광고를 보고 힌트 3개를 받아요!'}
             </div>
             {adState !== 'failed' && (
               <PrimaryButton onClick={onWatchAd} disabled={adState !== 'ready'}>
-                {adState === 'ready' ? '📺 광고 보고 힌트 받기' : '광고 불러오는 중...'}
+                {adState === 'ready' ? '📺 광고 보고 힌트 3개 받기' : '광고 불러오는 중...'}
               </PrimaryButton>
             )}
           </>
