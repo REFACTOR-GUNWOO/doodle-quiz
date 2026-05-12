@@ -276,7 +276,7 @@ export function AdminScreen() {
 
       <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 14 }}>
         {rows.map((r, idx) => {
-          const previewUrl = r.localPreview ?? r.existingUrl;
+          const previewUrl = r.localPreview ?? (r.existingUrl ? `${r.existingUrl}?t=${Date.now()}` : null);
           return (
             <CardFrame key={r.position} style={{ padding: 14 }}>
               <div

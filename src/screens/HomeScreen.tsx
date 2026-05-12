@@ -1,7 +1,8 @@
+import { useEffect, useRef, useState } from 'react';
 import noQuizImg from '../assets/no-quiz.png';
 import { COLORS } from '../theme';
 import { CardFrame, PrimaryButton, SecondaryButton } from '../components/UI';
-import { Storage } from '@apps-in-toss/web-framework';
+import { Storage, TossAds } from '@apps-in-toss/web-framework';
 import type { Quiz } from '../store';
 
 type Props = {
@@ -29,6 +30,33 @@ async function devReset() {
 
 export function HomeScreen({ progress, previewQuiz, hasQuizzes, allDone, onStart, onHistory }: Props) {
   const showCelebration = allDone || !previewQuiz;
+  const bannerRef = useRef<HTMLDivElement>(null);
+  const [bannerSupported, setBannerSupported] = useState(false);
+  const [bannerReady, setBannerReady] = useState(false);
+
+  useEffect(() => {
+    try {
+      if (!TossAds.initialize.isSupported()) return;
+      setBannerSupported(true);
+      TossAds.initialize({
+        callbacks: {
+          onInitialized: () => setBannerReady(true),
+          onInitializationFailed: () => {},
+        },
+      });
+    } catch { /* 토스 앱 환경 아님 */ }
+  }, []);
+
+  useEffect(() => {
+    if (!bannerReady || !bannerRef.current) return;
+    try {
+      const attached = TossAds.attachBanner('ait.v2.live.1ce0efedcbcc4c3a', bannerRef.current, {
+        theme: 'auto',
+        variant: 'expanded',
+      });
+      return () => attached?.destroy();
+    } catch { /* ignore */ }
+  }, [bannerReady]);
 
   return (
     <div style={{
@@ -92,6 +120,12 @@ export function HomeScreen({ progress, previewQuiz, hasQuizzes, allDone, onStart
             ))}
           </div>
         </CardFrame>
+      )}
+
+      {bannerSupported && (
+        <div style={{ marginLeft: -22, width: 'calc(100% + 44px)', flexShrink: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div ref={bannerRef} style={{ width: '100%', height: 100 }} />
+        </div>
       )}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 'auto' }}>

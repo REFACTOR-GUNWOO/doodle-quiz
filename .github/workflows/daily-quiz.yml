@@ -1,0 +1,40 @@
+name: Generate Daily Quiz
+
+on:
+  schedule:
+    # KST 22:00 = UTC 13:00
+    - cron: '0 13 * * *'
+  workflow_dispatch:
+    inputs:
+      quiz_date:
+        description: '특정 날짜 지정 (YYYY-MM-DD). 비우면 내일 KST 날짜.'
+        required: false
+        default: ''
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate daily quiz
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          TARGET_DATE="${{ github.event.inputs.quiz_date }}"
+          if [ -z "$TARGET_DATE" ]; then
+            TARGET_DATE=$(TZ=Asia/Seoul date -d "+1 day" +%Y-%m-%d)
+          fi
+          echo "Generating quiz for: $TARGET_DATE"
+          QUIZ_DATE=$TARGET_DATE node scripts/generate-daily-quiz.mjs
