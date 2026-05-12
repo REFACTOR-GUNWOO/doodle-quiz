@@ -5,9 +5,11 @@ type Props = {
   remaining: number;
   onUse: () => void;
   onClose: () => void;
+  onWatchAd?: () => void;
+  adState?: 'loading' | 'ready' | 'failed';
 };
 
-export function HintModal({ remaining, onUse, onClose }: Props) {
+export function HintModal({ remaining, onUse, onClose, onWatchAd, adState }: Props) {
   return (
     <div style={{
       position: 'absolute', inset: 0,
@@ -45,7 +47,22 @@ export function HintModal({ remaining, onUse, onClose }: Props) {
           오늘 남은 힌트: <span style={{ color: COLORS.primary, fontWeight: 700 }}>{remaining}개</span>
         </div>
 
-        <PrimaryButton onClick={onUse} disabled={remaining === 0}>힌트 사용하기</PrimaryButton>
+        {remaining === 0 && onWatchAd ? (
+          <>
+            <div style={{ textAlign: 'center', fontSize: 13, color: COLORS.inkMuted, marginBottom: 10 }}>
+              {adState === 'failed'
+                ? '광고를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.'
+                : '힌트를 모두 사용했어요. 광고를 보고 힌트를 받아요!'}
+            </div>
+            {adState !== 'failed' && (
+              <PrimaryButton onClick={onWatchAd} disabled={adState !== 'ready'}>
+                {adState === 'ready' ? '📺 광고 보고 힌트 받기' : '광고 불러오는 중...'}
+              </PrimaryButton>
+            )}
+          </>
+        ) : (
+          <PrimaryButton onClick={onUse} disabled={remaining === 0}>힌트 사용하기</PrimaryButton>
+        )}
       </div>
     </div>
   );

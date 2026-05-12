@@ -10,11 +10,10 @@ export function HistoryScreen({ onBack }: Props) {
 
   const recent7 = (() => {
     const result: { d: string; n: number; today: boolean }[] = [];
-    const now = new Date();
-    const todayKey = now.toISOString().slice(0, 10);
+    const nowKST = new Date(Date.now() + 9 * 60 * 60 * 1000);
+    const todayKey = nowKST.toISOString().slice(0, 10);
     for (let i = 6; i >= 0; i--) {
-      const d = new Date(now);
-      d.setDate(d.getDate() - i);
+      const d = new Date(nowKST.getTime() - i * 86400000);
       const key = d.toISOString().slice(0, 10);
       const isToday = i === 0;
       let n: number;
@@ -23,7 +22,7 @@ export function HistoryScreen({ onBack }: Props) {
       } else {
         n = history.find((h) => h.date === key)?.solved ?? 0;
       }
-      const label = isToday ? '오늘' : `${d.getMonth() + 1}/${d.getDate()}`;
+      const label = isToday ? '오늘' : `${d.getUTCMonth() + 1}/${d.getUTCDate()}`;
       result.push({ d: label, n, today: isToday });
     }
     return result;

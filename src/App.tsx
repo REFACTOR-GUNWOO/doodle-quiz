@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './App.css';
-import { getAnonymousKey } from '@apps-in-toss/web-framework';
+import { getAnonymousKey, loadFullScreenAd, showFullScreenAd } from '@apps-in-toss/web-framework';
 import { useStore } from './store';
 import { fetchTodayQuizzes } from './api/quiz';
 import { saveQuizResult } from './api/results';
@@ -48,6 +48,10 @@ function MainApp() {
   const [shake, setShake] = useState(false);
   const [loading, setLoading] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  type AdState = 'idle' | 'loading' | 'ready' | 'failed';
+  const [adState, setAdState] = useState<AdState>('idle');
+  const rewardedUnregRef = useRef<(() => void) | null>(null);
+  const adTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (useStore.persist.hasHydrated()) {
@@ -65,6 +69,66 @@ function MainApp() {
     }).catch(() => {});
   }, []);
 
+  const loadRewardedAd = useCallback(() => {
+    try {
+      if (!loadFullScreenAd.isSupported()) return;
+      rewardedUnregRef.current?.();
+      if (adTimeoutRef.current) clearTimeout(adTimeoutRef.current);
+
+      setAdState('loading');
+
+      const unregister = loadFullScreenAd({
+        options: { adGroupId: 'ait.v2.live.775d02dd52984660' },
+        onEvent: (event) => {
+          if (event.type === 'loaded') {
+            clearTimeout(adTimeoutRef.current!);
+            setAdState('ready');
+          }
+        },
+        onError: () => {
+          clearTimeout(adTimeoutRef.current!);
+          setAdState('failed');
+        },
+      });
+
+      adTimeoutRef.current = setTimeout(() => setAdState('failed'), 12000);
+      rewardedUnregRef.current = unregister;
+    } catch {
+      setAdState('failed');
+    }
+  }, []);
+
+  useEffect(() => {
+    loadRewardedAd();
+    return () => {
+      rewardedUnregRef.current?.();
+      if (adTimeoutRef.current) clearTimeout(adTimeoutRef.current);
+    };
+  }, [loadRewardedAd]);
+
+  const watchRewardedAd = useCallback(() => {
+    try {
+      if (!showFullScreenAd.isSupported() || adState !== 'ready') return;
+      setAdState('idle');
+      showFullScreenAd({
+        options: { adGroupId: 'ait.v2.live.775d02dd52984660' },
+        onEvent: (event) => {
+          if (event.type === 'userEarnedReward') {
+            store.addHint();
+          }
+          if (event.type === 'dismissed') {
+            setShowHintModal(false);
+            loadRewardedAd();
+          }
+        },
+        onError: () => {
+          setAdState('failed');
+          loadRewardedAd();
+        },
+      });
+    } catch { /* 토스 앱 환경 아님 */ }
+  }, [adState, loadRewardedAd, store]);
+
   useEffect(() => {
     if (!hydrated) return;
     store.tickDate();
@@ -77,7 +141,7 @@ function MainApp() {
   }, [store.currentIdx]);
 
   const loadQuizzes = async () => {
-    if (store.cachedDate === new Date().toISOString().slice(0, 10) && store.cachedQuizzes.length === 5) return;
+    if (store.cachedDate === todayKST && store.cachedQuizzes.length === 5) return;
     setLoading(true);
     try {
       const quizzes = await fetchTodayQuizzes();
@@ -91,7 +155,8 @@ function MainApp() {
     }
   };
 
-  const quizzes = store.cachedQuizzes.length === 5 ? store.cachedQuizzes : [];
+  const todayKST = new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  const quizzes = (store.cachedDate === todayKST && store.cachedQuizzes.length === 5) ? store.cachedQuizzes : [];
   const hasQuizzes = quizzes.length === 5;
   const currentQuiz = quizzes[store.currentIdx];
   const nextUnsolvedIdx = quizzes.findIndex(
@@ -224,6 +289,8 @@ function MainApp() {
               remaining={store.hintsRemaining}
               onUse={useHint}
               onClose={() => setShowHintModal(false)}
+              onWatchAd={watchRewardedAd}
+              adState={adState === 'idle' ? 'loading' : adState}
             />
           )}
         </>

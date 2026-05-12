@@ -6,14 +6,12 @@ const storage = import.meta.env.PROD
   ? createJSONStorage(() => Storage)
   : undefined;
 
-function today(): string {
-  return new Date().toISOString().slice(0, 10);
+function todayKST(): string {
+  return new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
 }
 
-function yesterday(): string {
-  const d = new Date();
-  d.setDate(d.getDate() - 1);
-  return d.toISOString().slice(0, 10);
+function yesterdayKST(): string {
+  return new Date(Date.now() + 9 * 60 * 60 * 1000 - 86400000).toISOString().slice(0, 10);
 }
 
 export type Quiz = {
@@ -63,7 +61,7 @@ export const useStore = create<LocalState & Actions>()(
   persist(
     (set, get) => ({
       userId: crypto.randomUUID(),
-      currentDate: today(),
+      currentDate: todayKST(),
       currentIdx: 0,
       hintsRemaining: 1,
       hintsUsedToday: 0,
@@ -84,16 +82,16 @@ export const useStore = create<LocalState & Actions>()(
 
       tickDate() {
         const state = get();
-        const t = today();
+        const t = todayKST();
         if (state.currentDate === t) return;
 
         const prevSolved = state.solvedToday.length;
         const prevDate = state.currentDate;
 
         let newStreak = state.streak;
-        if (prevSolved === 5 && prevDate === yesterday()) {
+        if (prevSolved === 5 && prevDate === yesterdayKST()) {
           newStreak = state.streak + 1;
-        } else if (prevDate !== yesterday()) {
+        } else if (prevDate !== yesterdayKST()) {
           newStreak = 0;
         }
 
@@ -163,7 +161,7 @@ export const useStore = create<LocalState & Actions>()(
       },
 
       setCachedQuizzes(quizzes) {
-        set({ cachedDate: today(), cachedQuizzes: quizzes });
+        set({ cachedDate: todayKST(), cachedQuizzes: quizzes });
       },
 
       resetHints() {

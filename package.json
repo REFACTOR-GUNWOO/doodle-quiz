@@ -8,7 +8,8 @@
     "build": "ait build",
     "deploy": "ait deploy",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "generate-quiz": "node --env-file=.env.local scripts/generate-daily-quiz.mjs"
   },
   "dependencies": {
     "@apps-in-toss/web-framework": "^2.4.7",
@@ -27,6 +28,7 @@
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^15.15.0",
+    "openai": "^4.104.0",
     "prettier": "^3.4.2",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.24.1",

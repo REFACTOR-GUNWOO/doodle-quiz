@@ -3,3 +3,6 @@ dist
 .env.local
 .env.*.local
 *.ait
+.claude/
+src/assets/confetti.json
+src/assets/hint-bulb.png
